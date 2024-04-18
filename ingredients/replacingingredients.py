@@ -50,14 +50,22 @@ def perform_replacements(row):
         elif ner_list[i] == 'oleo':
             ner_list[i] = 'margarine'
 
-    
-    
+        elif ner_list[i] == 'soda':
+            ner_list[i] = 'baking soda'
+
+        elif ner_list[i] == 'chicken breasts':
+            ner_list[i] = 'chicken'
+
+        elif ner_list[i] == 'whipping cream':
+            ner_list[i] = 'heavy cream'
+
+
     # Convert list back to string and update 'NER' column in row
     row['NER'] = str(ner_list)
 
 # Read the CSV file and perform replacements
-input_file = 'withoutstrangeingredients20000.csv'
-output_file = 'modified_withoutstrangeingredients.csv'
+input_file = 'final.csv'
+output_file = 'veryfinal.csv'
 
 with open(input_file, 'r', newline='', encoding='utf-8') as infile, \
      open(output_file, 'w', newline='', encoding='utf-8') as outfile:
