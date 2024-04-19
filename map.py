@@ -7,14 +7,14 @@ class RecipeMap:
     def __init__(self):
         self._map = {}
 
-    def add_recipe(self, recipe_name, recipe_ingredients):
-        self._map[recipe_name] = recipe_ingredients
+    def recipeadd(self, recipename, recipeingredient):
+        self._map[recipename] = recipeingredient
 
-    def get_recipe(self, recipe_name):
-        return self._map.get(recipe_name)
+    def get_recipe(self, recipename):
+        return self._map.get(recipename)
 
-    def has_recipe(self, recipe_name):
-        return recipe_name in self._map
+    def has_recipe(self, recipename):
+        return recipename in self._map
 
     def items(self):
         return self._map.items()
@@ -26,12 +26,12 @@ class RecipeMap:
         return iter(self._map.items())
 
 
-def recipesort(recipe_map, user_ingredients):
+def recipesort(recipe_map, useringredients):
     common_ingredients_count = {}
 
-    for recipe, recipe_ingredients in recipe_map.items():
+    for recipe, recipeingredient in recipe_map.items():
         # common ingredients w/ user
-        common_ingredients = set(recipe_ingredients) & set(user_ingredients)
+        common_ingredients = set(recipeingredient) & set(useringredients)
 
         if common_ingredients:
             common_ingredients_count[recipe] = len(common_ingredients)
@@ -41,23 +41,23 @@ def recipesort(recipe_map, user_ingredients):
     
     return sorted_recipes
 
-def searchbutton(recipe_map, user_ingredients_entry, output_text):
-    user_ingredients = user_ingredients_entry.get().split(',')
-    user_ingredients = [ingredient.strip() for ingredient in user_ingredients]
+def searchbutton(recipe_map, useringredientsinput, outputtxt):
+    useringredients = useringredientsinput.get().split(',')
+    useringredients = [ingredient.strip() for ingredient in useringredients]
     
-    sorted_recipes = recipesort(recipe_map, user_ingredients)
+    sorted_recipes = recipesort(recipe_map, useringredients)
     
     # Clear previous output
-    output_text.delete(1.0, tk.END)
+    outputtxt.delete(1.0, tk.END)
     
     #recipe display
-    output_text.insert(tk.END, "Recipes sorted by most ingredients in common with your input:\n")
+    outputtxt.insert(tk.END, "Recipes sorted by most ingredients in common with your input:\n")
     count = 0
     for recipe, ingredient_count in sorted_recipes:
         if count < 50:  # output only first 50
-            common_ingredients = set(recipe_map.get_recipe(recipe)) & set(user_ingredients)
-            output_text.insert(tk.END, f"\n{recipe}: {ingredient_count} ingredients in common\n")
-            output_text.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
+            common_ingredients = set(recipe_map.get_recipe(recipe)) & set(useringredients)
+            outputtxt.insert(tk.END, f"\n{recipe}: {ingredient_count} ingredients in common\n")
+            outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
             count += 1
         else:
             break

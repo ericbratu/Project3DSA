@@ -10,24 +10,24 @@ def main():
     # load from sheet
     df = pd.read_csv('veryfinal.csv')
     for index, row in df.iterrows():
-        recipe_name = row['title']
-        recipe_ingredients = eval(row['NER'])
-        recipe_map.add_recipe(recipe_name, recipe_ingredients)
+        recipename = row['title']
+        recipeingredient = eval(row['NER'])
+        recipe_map.recipeadd(recipename, recipeingredient)
     
     root = tk.Tk()
     root.title("Recipe Finder")
 
     #ui
-    input_frame = tk.Frame(root)
-    input_frame.pack(pady=10, padx=10)
-    user_ingredients_entry = tk.Entry(input_frame, width=50)
-    user_ingredients_entry.pack(side=tk.LEFT, padx=5)
-    search_button = tk.Button(input_frame, text="Search", command=lambda: searchbutton(recipe_map, user_ingredients_entry, output_text))
-    search_button.pack(side=tk.LEFT, padx=5)
-    hint_label = tk.Label(input_frame, text="*Separate ingredients with a comma!", font=("Helvetica", 10, "italic"))
-    hint_label.pack(side=tk.TOP, pady=5, anchor='center')
-    output_text = scrolledtext.ScrolledText(root, width=80, height=20, wrap=tk.WORD)
-    output_text.pack(pady=10, padx=10)
+    inputbar = tk.Frame(root)
+    inputbar.pack(pady=10, padx=10)
+    useringredientsinput = tk.Entry(inputbar, width=50)
+    useringredientsinput.pack(side=tk.LEFT, padx=5)
+    searchbut = tk.Button(inputbar, text="Search", command=lambda: searchbutton(recipe_map, useringredientsinput, outputtxt))
+    searchbut.pack(side=tk.LEFT, padx=5)
+    disclaimer = tk.Label(inputbar, text="*Separate ingredients with a comma!", font=("Helvetica", 10, "italic"))
+    disclaimer.pack(side=tk.TOP, pady=5, anchor='center')
+    outputtxt = scrolledtext.ScrolledText(root, width=80, height=20, wrap=tk.WORD)
+    outputtxt.pack(pady=10, padx=10)
 
 
     root.mainloop()
