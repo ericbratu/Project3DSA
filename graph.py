@@ -46,22 +46,30 @@ def recipe_sort(graph, user_inputs):
     # sort recipes by the number of matches in descending order
     sorted_recipes = sorted(recipe_matches.items(), key=lambda x: x[1], reverse=True)
     
-    # print the sorted recipes with their common ingredients
-    for recipe, num_common_ingredients in sorted_recipes:
+    # print the sorted recipes with their common ingredients w/ 50 cap
+    num_outputs = min(50, len(sorted_recipes))
+    for i in range(num_outputs):
+        recipe, num_common_ingredients = sorted_recipes[i]
         common_ingredients = set(user_inputs) & set(graph.get_neighbors(recipe))
         print(f"Recipe title: {recipe}, {num_common_ingredients} ingredients in common. Common ingredients: {', '.join(common_ingredients)}")
 
-def main():
-    recipe_map = RecipeGraph()
+# def main():
+#     recipe_map = RecipeGraph()
     
-    # load from sheet
-    df = pd.read_csv('veryfinal.csv')
-    for index, row in df.iterrows():
-        recipename = row['title']
-        recipeingredients = eval(row['NER'])
-        recipe_map.add_vertex(recipename)
+#     df = pd.read_csv('veryfinal.csv')
+#     for index, row in df.iterrows():
+#         recipename = row['title']
+#         recipeingredients = eval(row['NER'])
+#         recipe_map.add_vertex(recipename)
+        
+#         for ingredient in recipeingredients:
+#             recipe_map.add_vertex(ingredient)
+#             recipe_map.add_edge(recipename, ingredient)
+
+#     user_input = input("Enter ingredients separated by commas: ")
+#     user_inputs = [ingredient.strip() for ingredient in user_input.split(',')]
     
-    # Add each ingredient as a vertex and create edges from recipe to ingredient
-    for ingredient in recipeingredients:
-        recipe_map.add_vertex(ingredient)
-        recipe_map.add_edge(recipename, ingredient)
+#     recipe_sort(recipe_map, user_inputs)
+
+# if __name__ == "__main__":
+#     main()
