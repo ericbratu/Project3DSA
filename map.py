@@ -57,8 +57,12 @@ def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
     outputtxt.delete(1.0, tk.END)
     
     sorted_recipes = recipesort(recipe_map, useringredients)
+        
+    # if there are no recipes with input ingredients
+    if sorted_recipes == []:
+        outputtxt.insert(tk.END, "No recipes found with the input ingredients.")
+        return
     
-
     outputtxt.insert(tk.END, "Recipes sorted by most ingredients in common with your input using map structure:\n")
     count = 0
     for recipe, ingredient_count in sorted_recipes:
@@ -66,7 +70,7 @@ def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
             common_ingredients = set(recipe_map.get_recipe(recipe)) & set(useringredients)
             outputtxt.insert(tk.END, f"\n{recipe}: ", "bold")
             outputtxt.insert(tk.END, f"{ingredient_count} ingredients in common\n")
-            outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
+            outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")                
             outputtxt.insert(tk.END, f"Link: {recipe_map.get_recipe(recipe)[-1]}\n")  
             count += 1
         else:
