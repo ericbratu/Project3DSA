@@ -19,8 +19,6 @@ class RecipeMap:
     def items(self):
         return self._map.items()
 
-    def __len__(self):
-        return len(self._map)
 
     def __iter__(self):
         return iter(self._map.items())
@@ -62,3 +60,11 @@ def searchbutton(recipe_map, useringredientsinput, outputtxt):
         else:
             break
 
+def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
+    start_time = time.time()
+    
+    searchbutton(recipe_map, useringredientsinput, outputtxt)
+    
+    elapsed_time = time.time() - start_time
+    
+    elapsed_time_label.config(text=f"Time taken: {elapsed_time:.2f} seconds")
