@@ -28,43 +28,45 @@ def recipesort(recipe_map, useringredients):
     common_ingredients_count = {}
 
     for recipe, recipeingredient in recipe_map.items():
-        # common ingredients w/ user
+
         common_ingredients = set(recipeingredient) & set(useringredients)
 
         if common_ingredients:
             common_ingredients_count[recipe] = len(common_ingredients)
 
-    # sort from most to least in common
+
     sorted_recipes = sorted(common_ingredients_count.items(), key=lambda x: x[1], reverse=True)
     
     return sorted_recipes
 
-def searchbutton(recipe_map, useringredientsinput, outputtxt):
-    useringredients = useringredientsinput.get().split(',')
+def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
+
+    userinputs = useringredientsinput.get().strip()
+    
+    if not userinputs:
+        return
+    
+    start_time = time.time()
+    
+
+    useringredients = userinputs.split(',')
     useringredients = [ingredient.strip() for ingredient in useringredients]
+    outputtxt.delete(1.0, tk.END)
     
     sorted_recipes = recipesort(recipe_map, useringredients)
     
-    # Clear previous output
-    outputtxt.delete(1.0, tk.END)
-    
-    #recipe display
-    outputtxt.insert(tk.END, "Recipes sorted by most ingredients in common with your input:\n")
+
+    outputtxt.insert(tk.END, "Recipes sorted by most ingredients in common with your input using map structure:\n")
     count = 0
     for recipe, ingredient_count in sorted_recipes:
-        if count < 50:  # output only first 50
+        if count < 50:
             common_ingredients = set(recipe_map.get_recipe(recipe)) & set(useringredients)
             outputtxt.insert(tk.END, f"\n{recipe}: {ingredient_count} ingredients in common\n")
             outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
             count += 1
         else:
             break
+    
 
-def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
-    start_time = time.time()
-    
-    searchbutton(recipe_map, useringredientsinput, outputtxt)
-    
     elapsed_time = time.time() - start_time
-    
     elapsed_time_label.config(text=f"Time taken: {elapsed_time:.2f} seconds")
