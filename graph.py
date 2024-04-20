@@ -3,58 +3,68 @@ import tkinter as tk
 from tkinter import scrolledtext
 import time
 
-class RecipeGraph:
+class RecipeMap:
     def __init__(self):
-        self._adk_list = {}
+        self._map = {}
 
-    def add_vertex(self, vertex):
-        if vertex not in self.adj_list:
-            self.adj_list[vertex] = []
+    def recipeadd(self, recipename, recipeingredient):
+        self._map[recipename] = recipeingredient
 
-    def add_edge(self, vertex1, vertex2):
-        if vertex1 in self.adj_list and vertex2 in self.adj_list:
-            self.adj_list[vertex1].append(vertex2)
-            # self.adj_list[vertex2].append(vertex1)  # not sure if it should be directed or undirected
+    def get_recipe(self, recipename):
+        return self._map.get(recipename)
 
-    def get_adjacent_vertices(self, vertex):
-        if vertex in self.adj_list:
-            return self.adj_list[vertex]
+    def has_recipe(self, recipename):
+        return recipename in self._map
+
+    def items(self):
+        return self._map.items()
+
+
+    def __iter__(self):
+        return iter(self._map.items())
+
+
+def recipesort(recipe_map, useringredients):
+    common_ingredients_count = {}
+
+    for recipe, recipeingredient in recipe_map.items():
+        # common ingredients w/ user
+        common_ingredients = set(recipeingredient) & set(useringredients)
+
+        if common_ingredients:
+            common_ingredients_count[recipe] = len(common_ingredients)
+
+    # sort from most to least in common
+    sorted_recipes = sorted(common_ingredients_count.items(), key=lambda x: x[1], reverse=True)
+    
+    return sorted_recipes
+
+def searchbutton(recipe_map, useringredientsinput, outputtxt):
+    useringredients = useringredientsinput.get().split(',')
+    useringredients = [ingredient.strip() for ingredient in useringredients]
+    
+    sorted_recipes = recipesort(recipe_map, useringredients)
+    
+    # Clear previous output
+    outputtxt.delete(1.0, tk.END)
+    
+    #recipe display
+    outputtxt.insert(tk.END, "Recipes sorted by most ingredients in common with your input:\n")
+    count = 0
+    for recipe, ingredient_count in sorted_recipes:
+        if count < 50:  # output only first 50
+            common_ingredients = set(recipe_map.get_recipe(recipe)) & set(useringredients)
+            outputtxt.insert(tk.END, f"\n{recipe}: {ingredient_count} ingredients in common\n")
+            outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
+            count += 1
         else:
-            return []
+            break
 
-    def display_adjacency_list(self):
-        for vertex in self.adj_list:
-            print(vertex, ":", self.adj_list[vertex])
-
-
-    def recipe_sort(recipe_graph, userinput):
-        recipe_matches = {}
-
-        for recipe in graph.adj_list.keys():
-            ingredients = graph.get_adjacent_vertices(recipe)
-
-            common_ingredients = set(userinput) & set(ingredients)
-            common_ing_count = len(common_ingredients)
-
-            recipe_matches[recipe] = common_ing_count
-        
-        sorted_recipes = sorted(recipe_matches.times(), key=lambda x:x[1], reverse=True)
-
-        for recipe, common_ing_count in sorted_recipes:
-            common_ingredients = set(userinput) & set(graph.get_adjacent_vertices(recipe))
-
-def main():
-    df = pd.read_csv('veryfinal.csv')
-
-    recipe_graph = RecipeGraph()
-
-    for index, row in df.iterrows():
-        recipename = row['title']
-        recipeingredients = eval(row['NER'])
-        recipe_map.add_vertex(recipename)
-
-        for ingredient in recipeingredients:
-            recipe_map.add_vertex(ingredient)
-            recipe_map.add_edge(recipename, ingredient)
+def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
+    start_time = time.time()
     
+    searchbutton(recipe_map, useringredientsinput, outputtxt)
     
+    elapsed_time = time.time() - start_time
+    
+    elapsed_time_label.config(text=f"Time taken: {elapsed_time:.2f} seconds")
