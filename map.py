@@ -37,7 +37,6 @@ def recipesort(recipe_map, useringredients):
         if common_ingredients:
             common_ingredients_count[recipe] = len(common_ingredients)
 
-
     sorted_recipes = sorted(common_ingredients_count.items(), key=lambda x: x[1], reverse=True)
     
     return sorted_recipes

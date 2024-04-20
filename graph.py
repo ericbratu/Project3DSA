@@ -36,13 +36,11 @@ def recipe_sort(graph, user_inputs):
         ingredients = graph.get_neighbors(recipe)
         
         common_ingredients = set(user_inputs) & set(ingredients)
-        num_common_ingredients = len(common_ingredients)
         
-        recipe_matches[recipe] = num_common_ingredients
+        num_common_ingredients = len(common_ingredients)
 
-    # return the empty list if there are no recipes with input ingredients
-    if num_common_ingredients == 0:
-        return []
+        if num_common_ingredients > 0:
+            recipe_matches[recipe] = num_common_ingredients
 
     sorted_recipes = sorted(recipe_matches.items(), key=lambda x: x[1], reverse=True)
     
