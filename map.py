@@ -7,8 +7,11 @@ class RecipeMap:
     def __init__(self):
         self._map = {}
 
-    def recipeadd(self, recipename, recipeingredient):
-        self._map[recipename] = recipeingredient
+    def recipeadd(self, recipename, recipeingredient, recipelink):
+        if recipename not in self._map:
+            self._map[recipename] = recipeingredient
+            self._map[recipename].append(recipelink)
+
 
     def get_recipe(self, recipename):
         return self._map.get(recipename)
@@ -61,8 +64,10 @@ def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
     for recipe, ingredient_count in sorted_recipes:
         if count < 50:
             common_ingredients = set(recipe_map.get_recipe(recipe)) & set(useringredients)
-            outputtxt.insert(tk.END, f"\n{recipe}: {ingredient_count} ingredients in common\n")
+            outputtxt.insert(tk.END, f"\n{recipe}: ", "bold")
+            outputtxt.insert(tk.END, f"{ingredient_count} ingredients in common\n")
             outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
+            outputtxt.insert(tk.END, f"Link: {recipe_map.get_recipe(recipe)[-1]}\n")  
             count += 1
         else:
             break

@@ -4,10 +4,12 @@ import tkinter as tk
 class RecipeGraph:
     def __init__(self):
         self.adjacency_list = {}
+        self.recipe_links = {}
 
-    def add_vertex(self, vertex):
+    def add_vertex(self, vertex, link):
         if vertex not in self.adjacency_list:
             self.adjacency_list[vertex] = []
+            self.recipe_links[vertex] = link
 
     def add_edge(self, start_vertex, end_vertex):
         if start_vertex in self.adjacency_list and end_vertex in self.adjacency_list:
@@ -20,6 +22,9 @@ class RecipeGraph:
             return self.adjacency_list[vertex]
         else:
             raise ValueError("Vertex not found in graph.")
+
+    def get_recipe_link(self, recipe):
+        return self.recipe_links[recipe]
 
     def __str__(self):
         return str(self.adjacency_list)
@@ -48,7 +53,6 @@ import time
 def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_label):
 
     userinputs = useringredientsinput.get().strip()
-    
 
     if not userinputs:
         return
@@ -70,8 +74,10 @@ def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_labe
     for recipe, ingredient_count in sorted_recipes:
         if count < 50: 
             common_ingredients = set(recipe_graph.get_neighbors(recipe)) & set(useringredients)
-            outputtxt.insert(tk.END, f"\n{recipe}: {ingredient_count} ingredients in common\n")
+            outputtxt.insert(tk.END, f"\n{recipe}: ", "bold")
+            outputtxt.insert(tk.END, f"{ingredient_count} ingredients in common\n")
             outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
+            outputtxt.insert(tk.END, f"Link: {recipe_graph.get_recipe_link(recipe)}\n")
             count += 1
         else:
             break
