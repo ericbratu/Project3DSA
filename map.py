@@ -1,96 +1,70 @@
 import pandas as pd
+import tkinter as tk
+from tkinter import scrolledtext
+import time
 
 class RecipeMap:
     def __init__(self):
         self._map = {}
 
-    def add_recipe(self, recipe_name, recipe_ingredients):
-        """Add a recipe to the map with the given recipe name and ingredients."""
-        self._map[recipe_name] = recipe_ingredients
+    def recipeadd(self, recipename, recipeingredient):
+        self._map[recipename] = recipeingredient
 
-    def get_recipe(self, recipe_name):
-        """Retrieve ingredients for a given recipe name."""
-        return self._map.get(recipe_name)
+    def get_recipe(self, recipename):
+        return self._map.get(recipename)
 
-    def has_recipe(self, recipe_name):
-        """Check if the map contains a recipe with the given name."""
-        return recipe_name in self._map
+    def has_recipe(self, recipename):
+        return recipename in self._map
 
     def items(self):
-        """Return an iterable of (recipe_name, recipe_ingredients) tuples."""
         return self._map.items()
 
-    def __len__(self):
-        """Return the number of recipes in the map."""
-        return len(self._map)
 
     def __iter__(self):
-        """Allow iteration over the recipe map."""
         return iter(self._map.items())
 
-    def __repr__(self):
-        """Return a string representation of the map."""
-        return repr(self._map)
 
-
-
-
-# Filter and sort recipes based on user input
-def filter_and_sort_recipes(recipe_map, user_ingredients):
+def recipesort(recipe_map, useringredients):
     common_ingredients_count = {}
 
-
-    for recipe, recipe_ingredients in recipe_map:
-        #see howe many ingredients in common
-        common_ingredients = set(recipe_ingredients) & set(user_ingredients)
-
+    for recipe, recipeingredient in recipe_map.items():
+        # common ingredients w/ user
+        common_ingredients = set(recipeingredient) & set(useringredients)
 
         if common_ingredients:
             common_ingredients_count[recipe] = len(common_ingredients)
 
-    # Sort recipes by num ingredients in common with user input in descending order
+    # sort from most to least in common
     sorted_recipes = sorted(common_ingredients_count.items(), key=lambda x: x[1], reverse=True)
     
     return sorted_recipes
 
-def main():
-    # make map
-    recipe_map = RecipeMap()
-
-
-    df = pd.read_csv('veryfinal.csv')
-    print(df.shape)
-
-
-    for index, row in df.iterrows():
-        recipe_name = row['title']
-        recipe_ingredients = eval(row['NER'])
-        recipe_map.add_recipe(recipe_name, recipe_ingredients)
-
-    print(len(recipe_map))
-        
-    # Get user input (list of ingredients)
-    user_ingredients = input("Enter ingredients (comma separated): ").split(',')
+def searchbutton(recipe_map, useringredientsinput, outputtxt):
+    useringredients = useringredientsinput.get().split(',')
+    useringredients = [ingredient.strip() for ingredient in useringredients]
     
-    # Filter and sort recipes based on user input
-    sorted_recipes = filter_and_sort_recipes(recipe_map, user_ingredients)
+    sorted_recipes = recipesort(recipe_map, useringredients)
     
-
-    print("Recipes sorted by most ingredients in common with your input:")
-    count = 0  # Initialize counter
+    # Clear previous output
+    outputtxt.delete(1.0, tk.END)
+    
+    #recipe display
+    outputtxt.insert(tk.END, "Recipes sorted by most ingredients in common with your input:\n")
+    count = 0
     for recipe, ingredient_count in sorted_recipes:
-        common_ingredients = set(recipe_map.get_recipe(recipe)) & set(user_ingredients)
-        
-        #only output first 50
-        if count < 50:  
-            print(f"{recipe}: {ingredient_count} ingredients in common")
-            print(f"Common ingredients: {', '.join(common_ingredients)}")
-            count += 1  
+        if count < 50:  # output only first 50
+            common_ingredients = set(recipe_map.get_recipe(recipe)) & set(useringredients)
+            outputtxt.insert(tk.END, f"\n{recipe}: {ingredient_count} ingredients in common\n")
+            outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
+            count += 1
         else:
-            break  
+            break
 
-if __name__ == "__main__":
-    main()
-
-
-
+def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
+    start_time = time.time()
+    
+    searchbutton(recipe_map, useringredientsinput, outputtxt)
+    
+    elapsed_time = time.time() - start_time
+    
+    elapsed_time_label.config(text=f"Time taken: {elapsed_time:.2f} seconds")
