@@ -6,17 +6,23 @@ class RecipeGraph:
         self.adjacency_list = {}
         self.recipe_links = {}
 
+
+    #for testing purposes
     def add_vertex(self, vertex, link):
         if vertex not in self.adjacency_list:
             self.adjacency_list[vertex] = []
             self.recipe_links[vertex] = link
 
+
+    #for testing purposes
     def add_edge(self, start_vertex, end_vertex):
         if start_vertex in self.adjacency_list and end_vertex in self.adjacency_list:
             self.adjacency_list[start_vertex].append(end_vertex)
         else:
             raise ValueError("Both vertices must be in the graph.")
 
+
+    #for testing purposes
     def get_neighbors(self, vertex):
         if vertex in self.adjacency_list:
             return self.adjacency_list[vertex]
