@@ -48,7 +48,6 @@ def recipe_sort(graph, user_inputs):
     
     return sorted_recipes
 
-import time
 
 def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_label):
 
