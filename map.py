@@ -74,4 +74,4 @@ def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
     
 
     elapsed_time = time.time() - start_time
-    elapsed_time_label.config(text=f"Time taken: {elapsed_time:.2f} seconds")
+    elapsed_time_label.config(text=f"Time taken: {elapsed_time:.3f} seconds")
