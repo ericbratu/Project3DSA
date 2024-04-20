@@ -35,17 +35,17 @@ def recipe_sort(graph, user_inputs):
     for recipe in graph.adjacency_list.keys():
         ingredients = graph.get_neighbors(recipe)
         
-
         common_ingredients = set(user_inputs) & set(ingredients)
         num_common_ingredients = len(common_ingredients)
         
-
         recipe_matches[recipe] = num_common_ingredients
-    
+
+    # return the empty list if there are no recipes with input ingredients
+    if num_common_ingredients == 0:
+        return []
 
     sorted_recipes = sorted(recipe_matches.items(), key=lambda x: x[1], reverse=True)
     
-
     return sorted_recipes
 
 import time
@@ -68,9 +68,13 @@ def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_labe
 
     sorted_recipes = recipe_sort(recipe_graph, useringredients)
     
-
+    # if there are no recipes with input ingredients
+    if sorted_recipes == []:
+        outputtxt.insert(tk.END, "No recipes found with the input ingredients.")
+        return
+    
     outputtxt.insert(tk.END, "Recipes sorted by most ingredients in common with your input using graph structure:\n")
-    count = 0
+    count = 0        
     for recipe, ingredient_count in sorted_recipes:
         if count < 50: 
             common_ingredients = set(recipe_graph.get_neighbors(recipe)) & set(useringredients)
@@ -78,7 +82,7 @@ def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_labe
             outputtxt.insert(tk.END, f"{ingredient_count} ingredients in common\n")
             outputtxt.insert(tk.END, f"Common ingredients: {', '.join(common_ingredients)}\n")
             outputtxt.insert(tk.END, f"Link: {recipe_graph.get_recipe_link(recipe)}\n")
-            count += 1
+            count += 1            
         else:
             break
     
