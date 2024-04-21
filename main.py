@@ -57,7 +57,7 @@ def main():
     graph_but.pack(side=tk.LEFT, padx=5)
 
     # pq search button
-    pq_but = tk.Button(button_frame, text="Search using priority queue", command=lambda: pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label))
+    pq_but = tk.Button(button_frame, text="Search using pq", command=lambda: pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label))
     pq_but.pack(side=tk.LEFT, padx=5)
 
     # eaplsed time
