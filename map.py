@@ -1,6 +1,4 @@
-import pandas as pd
 import tkinter as tk
-from tkinter import scrolledtext
 import time
 
 class RecipeMap:

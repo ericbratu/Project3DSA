@@ -2,11 +2,13 @@ import pandas as pd
 import tkinter as tk
 import tkinter.font as tkfont
 from tkinter import scrolledtext
-import time
-from map import RecipeMap, recipesort, mapbutton
-from graph import RecipeGraph, recipe_sort, graphbutton
+from map import RecipeMap, mapbutton
+from graph import RecipeGraph, graphbutton
+from pq import PriorityQueue, pqbutton
 
 def main():
+
+    recipe_map = RecipeMap()
     recipe_graph = RecipeGraph()
     recipe_pq = PriorityQueue()
 
@@ -14,20 +16,22 @@ def main():
     df = pd.read_csv('veryfinal.csv')
 
     for index, row in df.iterrows():
-        recipename = row['title']
-        recipeingredient = eval(row['NER'])
-        recipelink = row['link']
-
-        # map implementation
-        recipe_map.recipeadd(recipename, recipeingredient, recipelink)
+        recipename = str(row['title'])  # typecast to string
+        recipeingredient = eval(row['NER']) 
+        recipelink = str(row['link'])  # typecast to string
         
-        # graph implementation
+
+        recipe_map.recipeadd(recipename, recipeingredient, recipelink)
+
+        # add to graph
         recipe_graph.add_vertex(recipename, recipelink)
         for ingredient in recipeingredient:
             recipe_graph.add_vertex(ingredient, None)
             recipe_graph.add_edge(recipename, ingredient)
 
-    # main windoe
+        # Add to priority queue
+        recipe_pq.dict_insert(recipename, recipeingredient, recipelink, 0)
+
     root = tk.Tk()
     root.title("Recipe Finder")
 
@@ -44,11 +48,11 @@ def main():
     button_frame = tk.Frame(root)
     button_frame.pack(pady=5)
 
-    # map buttons
+    # map search button
     map_but = tk.Button(button_frame, text="Search using map", command=lambda: mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label))
     map_but.pack(side=tk.LEFT, padx=5)
-    
-    # graph buttons
+
+    # graph search button
     graph_but = tk.Button(button_frame, text="Search using graph", command=lambda: graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_label))
     graph_but.pack(side=tk.LEFT, padx=5)
 
@@ -71,10 +75,5 @@ def main():
 
     root.mainloop()
 
-def new_func(useringredientsinput):
-    new_var = useringredientsinput
-    return new_var
-
 if __name__ == "__main__":
     main()
-    
