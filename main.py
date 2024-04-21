@@ -1,15 +1,15 @@
 import pandas as pd
 import tkinter as tk
 import tkinter.font as tkfont
-from tkinter import scrolledtext, Label
+from tkinter import scrolledtext
 import time
-from map import RecipeMap, recipesort, mapbutton
-from graph import RecipeGraph, recipe_sort, graphbutton
+from pq import PriorityQueue, pqbutton
+from graph import RecipeGraph, graphbutton
+from dict import allRecipes
 
 def main():
-
-    recipe_map = RecipeMap()
     recipe_graph = RecipeGraph()
+    recipe_pq = PriorityQueue()
 
     df = pd.read_csv('veryfinal.csv')
     for index, row in df.iterrows():
@@ -17,16 +17,16 @@ def main():
         recipeingredient = eval(row['NER'])
         recipelink = row['link']
 
-        # map implementation
-        recipe_map.recipeadd(recipename, recipeingredient, recipelink)
-        
-        # graph implementation
+        # insert all recipes into priority queue
+        recipe_pq.dict_insert(recipename, recipeingredient, recipelink)
+
+        # insert all recipes into graph
         recipe_graph.add_vertex(recipename, recipelink)
         for ingredient in recipeingredient:
             recipe_graph.add_vertex(ingredient, None)
             recipe_graph.add_edge(recipename, ingredient)
 
-    # main windoe
+    # main window
     root = tk.Tk()
     root.title("Recipe Finder")
 
@@ -44,9 +44,9 @@ def main():
     button_frame = tk.Frame(root)
     button_frame.pack(pady=5)
 
-    # map buttons
-    map_but = tk.Button(button_frame, text="Search using map", command=lambda: mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label))
-    map_but.pack(side=tk.LEFT, padx=5)
+    # priority queue button
+    pq_but = tk.Button(button_frame, text="Search using priority queue", command=lambda: pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label))
+    pq_but.pack(side=tk.LEFT, padx=5)
     
     # graph buttons
     graph_but = tk.Button(button_frame, text="Search using graph", command=lambda: graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_label))
@@ -67,6 +67,10 @@ def main():
     outputtxt.tag_configure("bold", font=bold_font)
 
     root.mainloop()
+
+def new_func(useringredientsinput):
+    new_var = useringredientsinput
+    return new_var
 
 if __name__ == "__main__":
     main()
