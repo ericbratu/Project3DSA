@@ -71,7 +71,6 @@ def recipesort(recipe_pq, useringredients):
 
 
 def pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label):
-    
     userinputs = useringredientsinput.get().strip()
 
     if not userinputs:
@@ -86,7 +85,8 @@ def pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label):
 
     sorted_recipes = recipesort(recipe_pq, useringredients)
     
-    if sorted_recipes == []:
+
+    if not sorted_recipes:
         outputtxt.insert(tk.END, "No recipes found with the input ingredients.")
         return
 
@@ -95,7 +95,7 @@ def pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label):
     
     for recipename, recipe_data in sorted_recipes.items():
         if count < 50:
-            recipeingredientlist, recipelink, priority = recipe_data  
+            recipeingredientlist, recipelink, priority = recipe_data
             common_ingredients = set(useringredients) & set(recipeingredientlist)
             outputtxt.insert(tk.END, f"\n{recipename}: ", "bold")
             outputtxt.insert(tk.END, f"{priority} ingredients in common\n")
@@ -104,7 +104,6 @@ def pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label):
             count += 1
         else:
             break
-
     
     elapsed_time = time.time() - start_time
     elapsed_time_label.config(text=f"Time taken: {elapsed_time:.3f} seconds")
