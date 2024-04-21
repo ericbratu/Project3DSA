@@ -29,7 +29,7 @@ If multiple recipes have the same number of ingredients in common, they might ap
 
 ## Where Users can Get Help
 
-If users have any issues, they can email group members Eric Bratu, Grace Donath, and Xiaoguo Jia at [eric.bratu@ufl.edu](mailto:eric.bratu@ufl.edu), [gracedonath@ufl.edu](mailto:gracedonath@ufl.edu), and [xiaoguojia@ufl.edu](mailto:xiaoguojia@ufl.edu), respectively
+If users have any issues, they can email group members Eric Bratu, Grace Donath, and Xiaoguo Jia at [eric.bratu@ufl.edu](mailto:eric.bratu@ufl.edu), [gracedonath@ufl.edu](mailto:gracedonath@ufl.edu), and [xiaoguojia@ufl.edu](mailto:xiaoguojia@ufl.edu), respectively.
 
 
 ## License
