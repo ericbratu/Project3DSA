@@ -6,28 +6,37 @@ class RecipeGraph:
         self.adjacency_list = {}
         self.recipe_links = {}
 
+
+    #for testing purposes
     def add_vertex(self, vertex, link):
         if vertex not in self.adjacency_list:
             self.adjacency_list[vertex] = []
             self.recipe_links[vertex] = link
 
+
+    #for testing purposes
     def add_edge(self, start_vertex, end_vertex):
         if start_vertex in self.adjacency_list and end_vertex in self.adjacency_list:
             self.adjacency_list[start_vertex].append(end_vertex)
         else:
             raise ValueError("Both vertices must be in the graph.")
 
+
+    #for testing purposes
     def get_neighbors(self, vertex):
         if vertex in self.adjacency_list:
             return self.adjacency_list[vertex]
         else:
             raise ValueError("Vertex not found in graph.")
 
+
     def get_recipe_link(self, recipe):
         return self.recipe_links[recipe]
 
+
     def __str__(self):
         return str(self.adjacency_list)
+
 
 def recipe_sort(graph, user_inputs):
     recipe_matches = {}
@@ -43,11 +52,10 @@ def recipe_sort(graph, user_inputs):
             recipe_matches[recipe] = num_common_ingredients
 
     sorted_recipes = sorted(recipe_matches.items(), key=lambda x: x[1], reverse=True)
-    
     return sorted_recipes
 
-def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_label):
 
+def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_label):
     userinputs = useringredientsinput.get().strip()
 
     if not userinputs:
@@ -58,10 +66,8 @@ def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_labe
     useringredients = userinputs.split(',')
     useringredients = [ingredient.strip() for ingredient in useringredients]
     
-
     outputtxt.delete(1.0, tk.END)
     
-
     sorted_recipes = recipe_sort(recipe_graph, useringredients)
     
     # if there are no recipes with input ingredients
@@ -84,5 +90,5 @@ def graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_labe
     
 
     elapsed_time = time.time() - start_time
-    elapsed_time_label.config(text=f"Time taken: {elapsed_time:.2f} seconds")
+    elapsed_time_label.config(text=f"Time taken: {elapsed_time:.3f} seconds")
 
