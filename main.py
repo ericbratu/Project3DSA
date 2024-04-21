@@ -5,7 +5,6 @@ from tkinter import scrolledtext
 import time
 from pq import PriorityQueue, pqbutton
 from graph import RecipeGraph, graphbutton
-from dict import allRecipes
 
 def main():
     recipe_graph = RecipeGraph()
