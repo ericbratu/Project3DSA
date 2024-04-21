@@ -6,38 +6,72 @@ class PriorityQueue:
         self.dict = {}
         self.queue = []
         
-    def dict_insert(self, recipename, recipeingredientlist, recipelink):
+    def dict_insert(self, recipename, recipeingredientlist, recipelink, priority):
         if recipename not in self.dict:
-            self.dict[recipename] = (recipeingredientlist, recipelink, 0)
-
-    def pq_insert(self, recipename, recipeingredientlist, recipelink):
-        if recipename in self.dict:
-            recipe_data = self.dict[recipename]
-            self.queue.append((recipename, recipe_data[0], recipe_data[1], recipe_data[2]))
-
+            self.dict[recipename] = (recipeingredientlist, recipelink, priority)
+    
+    def pq_insert(self, recipename, recipeingredientlist, recipelink, priority):
+        self.queue.append((recipename, recipeingredientlist, recipelink, priority))
+        self._heapify_up(len(self.queue) - 1)
+    
     def pop(self):
         if not self.queue:
             return None
-        max_priority = max(self.queue, key=lambda x: x[3])
-        self.queue.remove(max_priority)
-        return max_priority
+        max_item = self.queue[0]
+        last_item = self.queue.pop()
+        if self.queue:
+            self.queue[0] = last_item
+            self._heapify_down(0)
+        return max_item
+    
+    def _heapify_up(self, index):
+        while index > 0:
+            parent_index = (index - 1) // 2
+            if self.queue[index][3] > self.queue[parent_index][3]:
+                self.queue[index], self.queue[parent_index] = self.queue[parent_index], self.queue[index]
+                index = parent_index
+            else:
+                break
+    
+    def _heapify_down(self, index):
+        while True:
+            left_child_index = 2 * index + 1
+            right_child_index = 2 * index + 2
+            largest_index = index
+            
+            if left_child_index < len(self.queue) and self.queue[left_child_index][3] > self.queue[largest_index][3]:
+                largest_index = left_child_index
+            if right_child_index < len(self.queue) and self.queue[right_child_index][3] > self.queue[largest_index][3]:
+                largest_index = right_child_index
+            
+            if largest_index != index:
+                self.queue[index], self.queue[largest_index] = self.queue[largest_index], self.queue[index]
+                index = largest_index
+            else:
+                break
+
 
 def recipesort(recipe_pq, useringredients):
-    sorted_recipes = []
+    sorted_recipes = {}
 
     for recipename, recipe_data in recipe_pq.dict.items():
-        recipeingredientlist, recipelink, priority = recipe_data
+        recipeingredientlist, recipelink, initialpriority = recipe_data
+        
         similar_ingredients = set(recipeingredientlist) & set(useringredients)
+        
         if similar_ingredients:
-            recipe_pq.dict[recipename] = (recipeingredientlist, recipelink, len(similar_ingredients))
-            recipe_pq.pq_insert(recipename, recipeingredientlist, recipelink)
+            recipe_pq.pq_insert(recipename, recipeingredientlist, recipelink, len(similar_ingredients))
 
     while recipe_pq.queue:
-        sorted_recipes.append(recipe_pq.pop())
+        recipename, recipeingredientlist, recipelink, priority = recipe_pq.pop()
+        sorted_recipes[recipename] = (recipeingredientlist, recipelink, priority)
 
+    print(sorted_recipes)
     return sorted_recipes
 
+
 def pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label):
+    
     userinputs = useringredientsinput.get().strip()
 
     if not userinputs:
@@ -51,15 +85,17 @@ def pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label):
     outputtxt.delete(1.0, tk.END)
 
     sorted_recipes = recipesort(recipe_pq, useringredients)
-    if not sorted_recipes:
+    
+    if sorted_recipes == []:
         outputtxt.insert(tk.END, "No recipes found with the input ingredients.")
         return
 
     outputtxt.insert(tk.END, "Recipes sorted by most ingredients in common with your input using priority queue structure:\n")
     count = 0
-    for recipe_data in sorted_recipes:
+    
+    for recipename, recipe_data in sorted_recipes.items():
         if count < 50:
-            recipename, recipeingredientlist, recipelink, priority = recipe_data
+            recipeingredientlist, recipelink, priority = recipe_data  
             common_ingredients = set(useringredients) & set(recipeingredientlist)
             outputtxt.insert(tk.END, f"\n{recipename}: ", "bold")
             outputtxt.insert(tk.END, f"{priority} ingredients in common\n")
@@ -68,6 +104,7 @@ def pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label):
             count += 1
         else:
             break
+
     
     elapsed_time = time.time() - start_time
     elapsed_time_label.config(text=f"Time taken: {elapsed_time:.2f} seconds")
