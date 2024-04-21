@@ -20,9 +20,10 @@ class PriorityQueue:
         if not self.queue:
             return None
         max_item = self.queue[0]
-        self.queue[0] = self.queue[-1]
-        self.queue.pop()
-        self.heapify_down(0)
+        last_item = self.queue.pop()
+        if self.queue:
+            self.queue[0] = last_item
+            self.heapify_down(0)
         return max_item
     
     # used when inserting to move the element up accordingly
