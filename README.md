@@ -21,7 +21,7 @@ pip install pandas
 
 ## Usage
 
-To use, run the main file and wait for the pop-up to open. Once open, input ingredients separated by a comma into the search bar (just a comma, not comma and space) and press either the "Search with map" button or "Search with graph" button depending on which data structure you would like to use. From there, it will output the first 50 recipes with the most ingredients in common with the user input in descending order.
+To use, run the main file and wait for the pop-up to open. Once open, input ingredients separated by a comma into the search bar (just a comma, not comma and space) and press either the "Search with map" button, "Search with graph", or "Search with pq" button depending on which data structure you would like to use. From there, it will output the first 50 recipes with the most ingredients in common with the user input in descending order.
 
 ## Disclaimer
 

@@ -5,35 +5,37 @@ from tkinter import scrolledtext, Label
 import time
 from map import RecipeMap, recipesort, mapbutton
 from graph import RecipeGraph, recipe_sort, graphbutton
+from pq import PriorityQueue, recipesort as pq_recipesort, pqbutton
 
 def main():
+
     recipe_map = RecipeMap()
     recipe_graph = RecipeGraph()
+    recipe_pq = PriorityQueue()
 
-    # Read the CSV file
+    # read in sheet
     df = pd.read_csv('veryfinal.csv')
 
-    # Iterate through each row in the dataframe
     for index, row in df.iterrows():
-        # Preprocess the recipe name, ingredients, and link
         recipename = str(row['title'])  # typecast to string
-        recipeingredient = eval(row['NER'])
+        recipeingredient = eval(row['NER']) 
         recipelink = str(row['link'])  # typecast to string
         
-        # Add the recipe to the RecipeMap
+
         recipe_map.recipeadd(recipename, recipeingredient, recipelink)
 
-        # Graph implementation
+        # add to graph
         recipe_graph.add_vertex(recipename, recipelink)
         for ingredient in recipeingredient:
             recipe_graph.add_vertex(ingredient, None)
             recipe_graph.add_edge(recipename, ingredient)
 
-    # Initialize the main window
+        # Add to priority queue
+        recipe_pq.dict_insert(recipename, recipeingredient, recipelink, 0)
+
     root = tk.Tk()
     root.title("Recipe Finder")
 
-    # User Input
     inputbar = tk.Frame(root)
     inputbar.pack(pady=10, padx=10)
     useringredientsinput = tk.Entry(inputbar, width=50)
@@ -43,23 +45,26 @@ def main():
     disclaimer = tk.Label(inputbar, text="*Separate ingredients with a comma!", font=("Times New Roman", 10, "italic"))
     disclaimer.pack(side=tk.TOP, pady=5, anchor='center')
 
-    # Button frame
+    # buttons
     button_frame = tk.Frame(root)
     button_frame.pack(pady=5)
 
-    # Map search button
+    # map search button
     map_but = tk.Button(button_frame, text="Search using map", command=lambda: mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label))
     map_but.pack(side=tk.LEFT, padx=5)
 
-    # Graph search button
+    # graph search button
     graph_but = tk.Button(button_frame, text="Search using graph", command=lambda: graphbutton(recipe_graph, useringredientsinput, outputtxt, elapsed_time_label))
     graph_but.pack(side=tk.LEFT, padx=5)
 
-    # Elapsed time label
+    # pq search button
+    pq_but = tk.Button(button_frame, text="Search using priority queue", command=lambda: pqbutton(recipe_pq, useringredientsinput, outputtxt, elapsed_time_label))
+    pq_but.pack(side=tk.LEFT, padx=5)
+
+    # eaplsed time
     elapsed_time_label = tk.Label(button_frame, text="Time taken: ")
     elapsed_time_label.pack(side=tk.LEFT, padx=5)
 
-    # Output
     outputtxt = scrolledtext.ScrolledText(root, width=80, height=20, wrap=tk.WORD, font=("Times New Roman", 10), spacing2=2)
     outputtxt.pack(pady=10, padx=10)
 
