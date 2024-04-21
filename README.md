@@ -7,7 +7,7 @@ This solves the problem of food buildup and eventual spoiling from not knowing w
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install tkinter & pandas in your terminal of choice. We used and reccomend VS code's built-in terminal.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install tkinter & pandas in your terminal of choice. We used and recommend VS code's built-in terminal.
 
 ```bash
 pip install tk
