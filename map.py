@@ -8,16 +8,17 @@ class RecipeMap:
         self.size = size
         self._map = [[] for _ in range(size)]
 
-    def _custom_hash(self, key):
+
+    def customhash(self, key):
         hash_value = sum(ord(char) for char in key) % self.size
         return hash_value
+
 
     def recipeadd(self, recipename, recipeingredient, recipelink):
         if not isinstance(recipename, str):
             raise TypeError("Recipe name must be a string")
 
-
-        hash_value = self._custom_hash(recipename)
+        hash_value = self.customhash(recipename)
 
     # check if recipe exists in hash
         for i, (name, ingredients, link) in enumerate(self._map[hash_value]):
@@ -30,30 +31,31 @@ class RecipeMap:
 
     def get_recipe(self, recipename):
         # custom hash func
-        hash_value = self._custom_hash(recipename)
+        hash_value = self.customhash(recipename)
         
-
         for name, ingredients, link in self._map[hash_value]:
             if name == recipename:
                 return ingredients, link
         return None
 
+
     def has_recipe(self, recipename):
-        hash_value = self._custom_hash(recipename)
+        hash_value = self.customhash(recipename)
         
         for name, ingredients, link in self._map[hash_value]:
             if name == recipename:
                 return True
         return False
 
+
     def items(self):
         for hash_value in range(self.size):
             for name, ingredients, link in self._map[hash_value]:
                 yield name, ingredients, link
 
+
     def __iter__(self):
         return self.items()
-
 
 
 def recipesort(recipe_map, useringredients):
@@ -69,7 +71,6 @@ def recipesort(recipe_map, useringredients):
 
     # sort by # of common ingredients in descending order
     sorted_recipes = sorted(common_ingredients_count.items(), key=lambda x: x[1], reverse=True)
-    
     return sorted_recipes
 
 
@@ -85,7 +86,6 @@ def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
     useringredients = userinputs.split(',')
     useringredients = [ingredient.strip() for ingredient in useringredients]
     
-
     outputtxt.delete(1.0, tk.END)
 
     sorted_recipes = recipesort(recipe_map, useringredients)
@@ -118,5 +118,3 @@ def mapbutton(recipe_map, useringredientsinput, outputtxt, elapsed_time_label):
             #finalise time taken
     elapsed_time = time.time() - start_time
     elapsed_time_label.config(text=f"Time taken: {elapsed_time:.3f} seconds")
-
-    
